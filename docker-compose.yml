@@ -1,0 +1,46 @@
+services:
+  snort_ids:
+    image: iqtlabs/snort:latest
+    cap_add:
+      - NET_ADMIN
+    network_mode: "host"
+    stdin_open: true
+    tty: true
+    environment:
+      - SNORT_LAN_IFACE=eth0
+      - SNORT_NET=192.168.0.0/16
+      - SNORT_HOME_NET=192.168.0.0/16
+    entrypoint: ["snort", "-i", "eth0", "-c", "/etc/snort/snort.conf", "-A", "console"]
+    volumes:
+      - ./docker/snort/classification.config:/etc/snort/classification.config 
+      - ./docker/snort/reference.config:/etc/snort/reference.config
+
+
+  argo_cd:
+    image: argoproj/argocd
+    command: tail -f /dev/null
+    # ... (Configuration for Argo CD)
+
+  prometheus:
+    image: prom/prometheus
+    # ... (Configuration for Prometheus)
+
+  grafana:
+    image: grafana/grafana
+    # ... (Configuration for Grafana)
+
+  kali_linux:
+    image: kalilinux/kali-rolling
+    command: tail -f /dev/null
+    # ... (Kali Linux configuration)
+
+  openvas_scanner:
+    image: mikesplain/openvas
+    # ... (OpenVAS configuration)
+
+  windows:
+    image: dockurr/windows
+
+networks:
+  monitoring_net:  # Create a custom network
+    driver: bridge  # Default bridge driver is usually fine
